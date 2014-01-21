@@ -1,6 +1,6 @@
 = Instamojo-rb
 
-Description goes here.
+This is the wrapper for Instamojo API in *Ruby*. 
 
 == Contributing to Instamojo-rb
  
