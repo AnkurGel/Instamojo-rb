@@ -15,7 +15,7 @@ require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
   gem.name = "Instamojo-rb"
-  gem.homepage = "http://github.com/ankurgel/Instamojo-rb"
+  gem.homepage = "http://github.com/AnkurGel/Instamojo-rb"
   gem.license = "MIT"
   gem.summary = %Q{Instamojo Ruby library - Assists you to programmatically create, edit and delete offers on Instamojo}
   gem.description = %Q{Instamojo Ruby library - Assists you to programmatically create, edit and delete offers on Instamojo}
