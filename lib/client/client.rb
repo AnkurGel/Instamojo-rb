@@ -56,16 +56,7 @@ module Instamojo
       options["username"] = username if username and !username.is_a?Hash
       options["password"] = password if password and !password.is_a?Hash
 
-
-      if block_given?
-        block_params = OpenStruct.new
-        block.call(block_params)
-        options = options.merge(block_params.marshal_dump)
-      end
-      #to tackle collective hash like:
-      #{"username" => "foo", :username => "foo"}
-      #added non-recursive basic code in lib/utility.rb
-      options.symbolize_keys!
+      options = set_options(options, &block)
 
       #Raise error if doesn't find username and password key in options
       @response = post('auth', options)
@@ -92,22 +83,25 @@ module Instamojo
 
     #POST /offer/ - Create an offer
     def create_offer(options = {}, &block)
-      if block_given?
-        block_params = OpenStruct.new
-        block.call(block_params)
-        options = options.merge(block_params.marshal_dump)
-      end
-      options.symbolize_keys!
+      options = set_options(options, &block)
       @response = post('offer', options)
     end
 
+    #PATCH /offer/
+    def edit_offer(slug, options = {}, &block)
+      options = set_options(options, &block)
+      patch("/offer/#{slug}", options)
+    end
 
     #DELETE /offer/:slug - Archives an offer
     def delete_offer(slug)
-
+      unless get_connection_object.headers.has_key?("X-Auth-Token")
+        raise "Please authenticate() to see your offers"
+      end
+      delete("/offer/#{slug}")
     end
 
-
+    #Uploading file and cover images
     def upload_file
 
     end
@@ -139,6 +133,18 @@ module Instamojo
           {:response_code => @response.status}
         end
       end
+    end
+
+    def set_options(options, &block)
+      if block_given?
+        block_params = OpenStruct.new
+        block.call(block_params)
+        options = options.merge(block_params.marshal_dump)
+      end
+      #to tackle collective hash like:
+      #{"username" => "foo", :username => "foo"}
+      #added non-recursive basic code in lib/utility.rb
+      options.symbolize_keys!
     end
 
     def add_header(key, value)
