@@ -1,6 +1,6 @@
 module Instamojo
   class API
-    attr_reader :app_id
+    attr_accessor :app_id
 
     def initialize(app_id = nil, options = {})
       options = app_id if app_id.is_a? Hash
