@@ -27,19 +27,24 @@ module Instamojo
       @conn #Faraday::Connection object
     end
 
-    def get(request = "/", params = {})
-      @request = request
-      sanitize_request
-      @response = @conn.get(Instamojo::PREFIX + @request, params)
-      return sanitize_response
+
+    def self.define_http_verb(http_verb)
+      define_method http_verb do |*args|
+        request = args[0] || "/"
+        params = args[1] || {}
+
+        @request = request
+        sanitize_request
+        method = @conn.method(http_verb)
+        @response = method.call(Instamojo::PREFIX + @request, params)
+        return sanitize_response
+      end
     end
 
-    def post(request, params = {})
-      @request = request
-      sanitize_request
-      @response = @conn.post(Instamojo::PREFIX + @request, params)
-      sanitize_response
-    end
+    define_http_verb :get
+    define_http_verb :post
+    define_http_verb :patch
+    define_http_verb :delete
 
 
     #POST /auth/
@@ -99,6 +104,11 @@ module Instamojo
 
     #DELETE /offer/:slug - Archives an offer
     def delete_offer(slug)
+
+    end
+
+
+    def upload_file
 
     end
 
