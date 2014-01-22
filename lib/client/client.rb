@@ -106,6 +106,19 @@ module Instamojo
 
     end
 
+
+    #DELETE /auth/:token - Delete auth token
+    def logout
+      auth_token = get_connection_object.headers['X-Auth-Token']
+      raise "Can't find any authorization token to logout." unless auth_token
+      delete("/auth/#{auth_token}")
+      if @response.has_key?("success") and @response['success']
+        get_connection_object.headers.delete("X-Auth-Token")
+      end
+      @response
+    end
+
+
     def to_s
       sprintf("Instamojo Client(URL: %s, Status: %s)",
               Instamojo::URL + Instamojo::PREFIX,
