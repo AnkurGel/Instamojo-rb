@@ -1,6 +1,6 @@
 module Instamojo
   class Client
-    attr_reader :connection_options, :app_id, :token
+    attr_reader :connection_options, :app_id
     attr_reader :request, :response
     attr_reader :authentication_flag
 
@@ -15,7 +15,7 @@ module Instamojo
     def initialize(api)
       @conn = Faraday.new(Instamojo::URL, &connection_options)
 
-      #To abstract in /errors.rb
+      #TODO: To abstract in /errors.rb
       raise "Supply API with app_id before generating client" unless api.app_id
 
       @app_id = api.app_id
@@ -58,7 +58,7 @@ module Instamojo
 
       options = set_options(options, &block)
 
-      #Raise error if doesn't find username and password key in options
+      #TODO: Raise error if doesn't find username and password key in options
       @response = post('auth', options)
       if @response.has_key?("success") and @response['success']
         add_header("X-Auth-Token", @response['token'])
@@ -103,7 +103,7 @@ module Instamojo
 
     #Uploading file and cover images
     def upload_file
-
+      #TODO
     end
 
 
