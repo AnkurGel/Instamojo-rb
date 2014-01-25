@@ -20,7 +20,7 @@ end
 api = Instamojo::API.new("app_id-you-received-from-api@instamojo.com")
 ```
 
-###Generate client:###  
+###Generate client:###
 `client = api.client`
 
 ###Authentication###
