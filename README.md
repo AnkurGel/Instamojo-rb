@@ -74,6 +74,18 @@ client.create_offer({
 `client.logout`
 
 
+##Development pipeline##
+
+Few things which will be available in next versions:
+
+* Error handling; with respect to `Instamojo` error codes.
+* File Upload support. 
+* `Offer` and `Event` model with api methods like   
+  + _Accessor_ methods like on `Offer`: `#title`, `#description`, `#quantity`
+  + `offer.set_title('Changed offer title')`
+  + `offer.set_quantity(30)`
+  + `offer.enable_variants`
+
 ##Contributing##
 
 * [Fork](https://github.com/AnkurGel/Instamojo-rb/fork) the project
