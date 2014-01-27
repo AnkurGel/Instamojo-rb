@@ -1,19 +1,89 @@
 = Instamojo-rb
 
-This is the wrapper for Instamojo API in *Ruby*. 
+This is the *Ruby* library of {Instamojo API}[http://instamojo.com/developers].   
+This will assist you to programmatically create, edit and delete offers on Instamojo. 
 
-== Contributing to Instamojo-rb
+== Installation
+       gem install Instamojo-rb
+
+For Rails/bundler projects:
+       gem 'Instamojo-rb'
+
+== Usage
+
+=== Set API keys
+       require 'Instamojo-rb'
+       api = Instamojo::API.new do |app|
+         app.app_id = "app_id-you-received-from-api@instamojo.com"
+       end
+       #or
+       api = Instamojo::API.new("app_id-you-received-from-api@instamojo.com")
+
+=== Generate Client
+       client = api.client
+
+=== Authentication
+       client.authenticate('instamojo_username', 'instamojo_password')
+       #or
+       client.authenticate do |user|
+         user.username = "instamojo_username"
+         user.password = "instamojo_password"
+       end
+       #=> Instamojo Client(URL: https://www.instamojo.com/api/1, Status: Authenticated)
+
+=== Offers
+
+==== List all offers
+
+       client.get_offers
+
+==== List details of an offer
+
+       offer_slug = "my-foo-product"
+       client.get_offer(offer_slug)     
+       #=> {"offer"=> {"shorturl"=>nil, "start_date"=>nil, "note"=>"", "description"=>"This is a demo product. Just *claim* it. ", "venue"=>nil, "title"=>"Demo product", "url"=>"https://www.instamojo.com/ankurgel/demo-product/", "slug"=>"demo-product", "base_price"=>"0.00", "quantity"=>nil, "end_date"=>nil, "currency"=>"INR", "cover_image"=>nil, "timezone"=>nil, "redirect_url"=>""},
+
+==== Create an offer
+       
+       client.create_offer do |offer|
+         offer.title = "Command line offer"
+         offer.description = "This offer is being created via Instamojo-rb"
+         offer.currency = "INR"
+         offer.base_price = 0
+         offer.quantity = 0
+       end
+
+       #OR
+       client.create_offer({
+           "title" => "Command line offer",
+           "description" => "This offer is being created via Instamojo-rb",
+           "currency" => "INR",
+           "base_price" => 0,
+           "quantity" => 0
+       })
+
+==== Archive an offer
+
+       offer_slug = "my-foo-product"
+       client.delete_offer(offer_slug)
+
+==== Logout
+       client.logout
+
+
+== Development Pipeline
+Few things which will be available in next versions:
+
+* Error handling; with respect to `Instamojo` error codes.
+* File Upload support. 
+* +Offer+ and +Event+ model with api methods like   
+  * _Accessor_ methods like on +Offer+: +#title+, +#description+, +#quantity+
+  * Functional setters: +offer.set_title('Changed offer title')+
+  *                     +offer.set_quantity(30)+
+  * +offer.enable_variants+
+
  
-* Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.
-* Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it.
-* Fork the project.
-* Start a feature/bugfix branch.
-* Commit and push until you are happy with your contribution.
-* Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
-* Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
-
 == Copyright
 
-Copyright (c) 2014 Ankur Goel. See LICENSE.txt for
-further details.
+Copyright (c) 2014 Ankur Goel. See LICENSE.txt for further details.
 
