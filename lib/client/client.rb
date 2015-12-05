@@ -4,29 +4,32 @@ module Instamojo
     attr_reader :request, :response
     attr_reader :authentication_flag
 
+    URL = Instamojo::HOST + "/api/" + Instamojo::API_VERSION
+
     def connection_options
       @connection_options = lambda do |connection|
         connection.request :url_encoded
-        connection.response :logger
+        connection.response :logger # TODO: set DEBUG flag for this
         connection.adapter Faraday.default_adapter
       end
     end
 
     def initialize(api)
-      @conn = Faraday.new(Instamojo::URL, &connection_options)
+      @conn = Faraday.new(URL, &connection_options)
 
       #TODO: To abstract in /errors.rb
-      raise "Supply API with app_id before generating client" unless api.app_id
+      raise "Supply API with api_key before generating client" unless api.api_key
 
-      @app_id = api.app_id
-      add_header("X-App-Id", @app_id)
+      @api_key = api.api_key
+      @auth_token = api.auth_token
+      add_header "X-Api-Key", @api_key
+      add_header "X-Auth-Token", @auth_token if @auth_token
       @authentication_flag = "Not authenticated"
     end
 
     def get_connection_object
-      @conn #Faraday::Connection object
+      @conn
     end
-
 
     def self.define_http_verb(http_verb)
       define_method http_verb do |*args|
@@ -36,7 +39,7 @@ module Instamojo
         @request = request
         sanitize_request
         method = @conn.method(http_verb)
-        @response = method.call(Instamojo::PREFIX + @request, params)
+        @response = method.call(@request, params)
         return sanitize_response
       end
     end
@@ -120,17 +123,14 @@ module Instamojo
 
 
     def to_s
-      sprintf("Instamojo Client(URL: %s, Status: %s)",
-              Instamojo::URL + Instamojo::PREFIX,
-              @authentication_flag
-      )
+      sprintf("Instamojo Client(URL: %s, Status: %s)", URL, @authentication_flag)
     end
 
 
     private
     def sanitize_request
       @request.concat('/') unless request.end_with? "/"
-      @request.prepend('/') unless request.start_with? "/"
+      @request[0] = '' if request.start_with? "/"
     end
 
     def sanitize_response
@@ -154,9 +154,7 @@ module Instamojo
         block.call(block_params)
         options = options.merge(block_params.marshal_dump)
       end
-      #to tackle collective hash like:
-      #{"username" => "foo", :username => "foo"}
-      #added non-recursive basic code in lib/utility.rb
+
       options.symbolize_keys!
     end
 
