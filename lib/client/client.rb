@@ -9,7 +9,7 @@ module Instamojo
     def connection_options
       @connection_options = lambda do |connection|
         connection.request :url_encoded
-        connection.response :logger # TODO: set DEBUG flag for this
+        connection.response :logger if Instamojo::DEBUG
         connection.adapter Faraday.default_adapter
       end
     end
@@ -23,8 +23,12 @@ module Instamojo
       @api_key = api.api_key
       @auth_token = api.auth_token
       add_header "X-Api-Key", @api_key
-      add_header "X-Auth-Token", @auth_token if @auth_token
-      @authentication_flag = "Not authenticated"
+      if @auth_token
+        add_header "X-Auth-Token", @auth_token
+        get 'debug' # dummy request to verify supplied auth_token
+      else
+        @authentication_flag = "Not authenticated"
+      end
     end
 
     def get_connection_object
@@ -136,7 +140,7 @@ module Instamojo
     def sanitize_response
       if @response.status == 200
         @authentication_flag = "Authenticated"
-        JSON.parse(@response.body)
+        JSON.parse(@response.body).merge({:response_code => @response.status})
       else
         begin
           ({:client_error => "Something went wrong",
