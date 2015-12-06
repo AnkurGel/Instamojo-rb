@@ -2,14 +2,14 @@ module Instamojo
   class Client
     attr_reader :connection_options, :app_id
     attr_reader :request, :response
-    attr_reader :authentication_flag
+    attr_reader :authorized
 
     URL = Instamojo::HOST + "/api/" + Instamojo::API_VERSION
 
     def connection_options
       @connection_options = lambda do |connection|
         connection.request :url_encoded
-        connection.response :logger if Instamojo::DEBUG
+        connection.response :logger if Instamojo::DEBUG # TODO: set DEBUG flag for this
         connection.adapter Faraday.default_adapter
       end
     end
@@ -27,7 +27,7 @@ module Instamojo
         add_header "X-Auth-Token", @auth_token
         get 'debug' # dummy request to verify supplied auth_token
       else
-        @authentication_flag = "Not authenticated"
+        @authorized = "Not authorized"
       end
     end
 
@@ -44,7 +44,7 @@ module Instamojo
         sanitize_request
         method = @conn.method(http_verb)
         @response = method.call(@request, params)
-        return sanitize_response
+        sanitize_response
       end
     end
 
@@ -73,63 +73,57 @@ module Instamojo
       @response
     end
 
-
-    #GET /offer - List all offers
-    def get_offers
-      unless get_connection_object.headers.has_key?("X-Auth-Token")
-        raise "Please authenticate() to see your offers"
-      end
-      get('offer')
+    # GET /links
+    def links_list
+      get('links')
+      @response.success? ? @response.body[:links].map { |link| Instamojo::Link.new link, self } : @response
     end
 
-    #GET /offer/:slug
-    def get_offer(slug)
-      get("offer/#{slug}")
+    # GET /links/:slug
+    def link_detail(slug)
+      get("links/#{slug}")
+      @response.success? ? @response.body[:links].map { |link| Instamojo::Link.new link, self } : @response
     end
 
-
-    #POST /offer/ - Create an offer
-    def create_offer(options = {}, &block)
+    # POST /links
+    def create_link(options = {}, &block)
       options = set_options(options, &block)
-      @response = post('offer', options)
+      post('links', options)
+      @response.success? ? Instamojo::Link.new(@response.body[:link], self) : @response
     end
 
-    #PATCH /offer/
-    def edit_offer(slug, options = {}, &block)
-      options = set_options(options, &block)
-      patch("/offer/#{slug}", options)
-    end
-
-    #DELETE /offer/:slug - Archives an offer
-    def delete_offer(slug)
-      unless get_connection_object.headers.has_key?("X-Auth-Token")
-        raise "Please authenticate() to see your offers"
+    # PATCH /links/:slug
+    def edit_link(link = nil, options = {}, &block)
+      debugger
+      if link && link.is_a?(Instamojo::Link)
+        yield(link) if block_given?
+      else
+        options = set_options(options, &block)
+        link = Instamojo::Link.new(options, self)
       end
-      delete("/offer/#{slug}")
+      patch("links/#{link.slug}", link.to_h)
+      @response.success? ? Instamojo::Link.new(@response.body[:link], self) : @response
     end
 
-    #Uploading file and cover images
-    def upload_file
-      #TODO
+    # DELETE /links/:slug
+    def archive_link(slug)
+      delete("links/#{slug}")
     end
-
 
     #DELETE /auth/:token - Delete auth token
     def logout
       auth_token = get_connection_object.headers['X-Auth-Token']
       raise "Can't find any authorization token to logout." unless auth_token
-      delete("/auth/#{auth_token}")
+      @response = delete("/auth/#{auth_token}")
       if @response.has_key?("success") and @response['success']
         get_connection_object.headers.delete("X-Auth-Token")
       end
       @response
     end
 
-
     def to_s
-      sprintf("Instamojo Client(URL: %s, Status: %s)", URL, @authentication_flag)
+      sprintf("Instamojo Client(URL: %s, Authorized: %s)", URL, @authorized)
     end
-
 
     private
     def sanitize_request
@@ -138,18 +132,9 @@ module Instamojo
     end
 
     def sanitize_response
-      if @response.status == 200
-        @authentication_flag = "Authenticated"
-        JSON.parse(@response.body).merge({:response_code => @response.status})
-      else
-        begin
-          ({:client_error => "Something went wrong",
-            :response_code => @response.status
-          }).merge(JSON.parse(@response.body))
-        rescue JSON::ParserError
-          {:response_code => @response.status}
-        end
-      end
+      @response = Instamojo::Response.new(@response)
+      @authorized = @response.success?
+      @response
     end
 
     def set_options(options, &block)

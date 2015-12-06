@@ -11,8 +11,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Ankur Goel"]
-  s.date = "2015-12-05"
-  s.description = "Instamojo Ruby library - Assists you to programmatically create, edit and delete offers on Instamojo"
+  s.date = "2015-12-06"
+  s.description = "Instamojo Ruby library - Assists you to programmatically create, edit and delete offers on Instamojo. Also supports payments request, listing and status"
   s.email = "ankurgel@gmail.com"
   s.extra_rdoc_files = [
     "LICENSE.txt",
@@ -34,6 +34,8 @@ Gem::Specification.new do |s|
     "lib/Instamojo-rb.rb",
     "lib/base.rb",
     "lib/client/client.rb",
+    "lib/client/link.rb",
+    "lib/response.rb",
     "lib/utility.rb",
     "spec/Instamojo-rb_spec.rb",
     "spec/spec_helper.rb"
@@ -41,30 +43,30 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/AnkurGel/Instamojo-rb"
   s.licenses = ["MIT"]
   s.rubygems_version = "2.2.2"
-  s.summary = "Instamojo Ruby library - Assists you to programmatically create, edit and delete offers on Instamojo"
+  s.summary = "Instamojo Ruby library - Assists you to programmatically create, edit and delete links on Instamojo"
 
   if s.respond_to? :specification_version then
     s.specification_version = 4
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<faraday>, ["= 0.8.8"])
-      s.add_development_dependency(%q<rspec>, ["~> 2.8.0"])
+      s.add_development_dependency(%q<rspec>, ["~> 2.8"])
       s.add_development_dependency(%q<bundler>, ["~> 1.0"])
-      s.add_development_dependency(%q<jeweler>, ["~> 1.8.7"])
-      s.add_development_dependency(%q<debugger>, [">= 0"])
+      s.add_development_dependency(%q<jeweler>, ["~> 1.8"])
+      s.add_development_dependency(%q<debugger>, ["~> 1.6"])
     else
       s.add_dependency(%q<faraday>, ["= 0.8.8"])
-      s.add_dependency(%q<rspec>, ["~> 2.8.0"])
+      s.add_dependency(%q<rspec>, ["~> 2.8"])
       s.add_dependency(%q<bundler>, ["~> 1.0"])
-      s.add_dependency(%q<jeweler>, ["~> 1.8.7"])
-      s.add_dependency(%q<debugger>, [">= 0"])
+      s.add_dependency(%q<jeweler>, ["~> 1.8"])
+      s.add_dependency(%q<debugger>, ["~> 1.6"])
     end
   else
     s.add_dependency(%q<faraday>, ["= 0.8.8"])
-    s.add_dependency(%q<rspec>, ["~> 2.8.0"])
+    s.add_dependency(%q<rspec>, ["~> 2.8"])
     s.add_dependency(%q<bundler>, ["~> 1.0"])
-    s.add_dependency(%q<jeweler>, ["~> 1.8.7"])
-    s.add_dependency(%q<debugger>, [">= 0"])
+    s.add_dependency(%q<jeweler>, ["~> 1.8"])
+    s.add_dependency(%q<debugger>, ["~> 1.6"])
   end
 end
 
