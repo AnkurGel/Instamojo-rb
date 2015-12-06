@@ -82,7 +82,7 @@ module Instamojo
     # GET /links/:slug
     def link_detail(slug)
       get("links/#{slug}")
-      @response.success? ? @response.body[:links].map { |link| Instamojo::Link.new link, self } : @response
+      @response.success? ? Instamojo::Link.new(@response.body[:link], self) : @response
     end
 
     # POST /links
@@ -107,6 +107,18 @@ module Instamojo
     # DELETE /links/:slug
     def archive_link(slug)
       delete("links/#{slug}")
+    end
+
+    # GET /payments
+    def payments_list
+      get('payments')
+      @response.success? ? @response.body[:payments].map { |payment| Instamojo::Payment.new payment, self } : @response
+    end
+
+    # GET /payments/:payment_id
+    def payment_detail(payment_id)
+      get("payments/#{payment_id}")
+      @response.success? ? Instamojo::Link.new(@response.body[:payment], self) : @response
     end
 
     #DELETE /auth/:token - Delete auth token

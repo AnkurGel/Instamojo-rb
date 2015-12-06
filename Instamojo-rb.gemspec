@@ -35,6 +35,8 @@ Gem::Specification.new do |s|
     "lib/base.rb",
     "lib/client/client.rb",
     "lib/client/link.rb",
+    "lib/client/payment.rb",
+    "lib/common_object.rb",
     "lib/response.rb",
     "lib/utility.rb",
     "spec/Instamojo-rb_spec.rb",

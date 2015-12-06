@@ -35,6 +35,8 @@ module Instamojo
 
     attr_reader :original
 
+    include CommonObject
+
     def initialize(link, client)
       @original = link
       link.each do |k, v|
@@ -51,20 +53,6 @@ module Instamojo
     # Carry out DELETE request on a link
     def archive
       @client.archive_link(self.slug)
-    end
-
-    def to_json
-      construct_hash.to_json
-    end
-
-    def to_h
-      construct_hash
-    end
-
-    private
-    def construct_hash
-      vars = instance_variables.reject { |x| [:@client, :@original].include? x }
-      Hash[vars.map { |key| [key.to_s[1..key.length], instance_variable_get(key)] }]
     end
   end
 end
