@@ -1,6 +1,6 @@
 # Instamojo-rb
-This is the **Ruby** library of [Instamojo API](http://instamojo.com/developers).
-This will assist you to programmatically create, edit and delete links on Instamojo. Also supports payments request, listing and status.
+This is the **Ruby** library of [Instamojo REST API](https://www.instamojo.com/developers/rest/).
+This will assist you to programmatically create, edit and delete links on Instamojo. Also supports [RAP](https://www.instamojo.com/developers/request-a-payment-api/) api for payments request, listing and status.
 
 ## Installation
 `gem install Instamojo-rb`
@@ -21,6 +21,7 @@ api = Instamojo::API.new("api_key-you-received-from-api@instamojo.com", "auth_to
 ### Generate client
 `client = api.client`
 
+---
 ### Links
 
 `Link` object contains all the necessary information required to interpret, modify and archive an Instamojo Link. All link operations on client returns one or collectionn of `links`. Original response from Instamojo API for a link is encapsulated in `link.original`, which is immutable.
@@ -34,13 +35,13 @@ _Helper methods_ for `Link`:
  More about it's usage is below.
 
 
-### Get Links
+#### Get Links
 ```ruby
 client.links_list
 #=> Array of Instamojo::Link objects
 ```
 
-### Create a new link
+#### Create a new link
 ##### Required:
 * `title` - Title of the Link, be concise.
 * `description` - Describe what your customers will get, you can add terms and conditions and any other relevant information here. Markdown is supported, popular media URLs like Youtube, Flickr are auto-embedded.
@@ -80,7 +81,7 @@ new_link_params = {title: 'API link 3', description: 'My dummy offer via API', c
 new_link = client.create_link(new_link_params)
 ```
 
-### Detail of a link
+#### Detail of a link
 ```ruby
 link = client.link_detail('link_slug_goes_here')
 #=> Returns Link object
@@ -106,6 +107,47 @@ or handle it directly without Link object
 client.edit_link({slug: 'foo-product', title: 'Foo', description: 'This new infromation should go in link'})
 ```
 
+---
+### Payments
+`Payment` object contains the necessary information such as `payment_id`, `quantity`, `status`, `buyer_email` etc. `Payment` object has following helpers:
+- `payment.to_h` - Returns equivalent Ruby hash for a payment
+- `payment.to_json` - Returns equivalent JSON for a payment
+- `payment.original` - Returns original payment data fetched from API.
+
+Details are documented [here](https://www.instamojo.com/developers/rest/#toc-payments)
+
+#### Get Payments
+```ruby
+client.payments
+#=> Returns array of Payment objects
+```
+#### Detail or status of a payment
+```ruby
+payment = client.payment_detail('payment_id')
+#=> Returns Payment object
+```
+#### Request a payment
+This is a part of [RAP API](https://www.instamojo.com/developers/request-a-payment-api/). You can request a payment from anyone via this who will then be notified to make a payment with specified payment. The payment then can be carried out via [Instapay](https://www.instamojo.com/pay/). Jump over to the documentation to see accepted parameters.
+##### Code:
+```ruby
+payment = client.payment_request({amount:100, purpose: 'api', send_email: true, email: 'ankurgel+2@gmail.com', redirect_url: 'http://ankurgoel.com'})
+#=> Returns response of payment request.
+p client.response.body[:payment_request]
+#=> Print status & details of payment_request. Details will also contain unique id which can be used to request the status of payment request later.
+```
+#### Get Payment Requests
+```ruby
+response = client.payment_requests_list
+#=> Returns response for all payment_requests with their status
+```
+#### Status of payment request
+You can get the status of a payment_request from the id you obtained after making payment request.
+```ruby
+client.payment_request_status('payment_request_id_goes_here')
+#=> Returns response containing the status of payment request.
+```
+
+---
 ### Authentication
 ```ruby
 client.authenticate('instamojo_username', 'instamojo_password')
@@ -116,17 +158,18 @@ client.authenticate do |user|
 end
 #=> Instamojo Client(URL: https://www.instamojo.com/api/1, Status: Authenticated)
 ```
-
-### Logging
-If you are interested in seeing api requests being made to Instamojo server. Flip this flag: `Instamojo::DEBUG = true` and genereate the api client again.
-
-### Logout
-`client.logout`
-
+#### Logout
+```ruby
+client.logout
+```
+---
 ### Misc
 * `client.authorized` - View last status of api client request.
 * `client.response` - View last procured response by client.
 * `client.response.code` - View `response_code` of last request sent by client.
+#### Logging
+If you are interested in seeing api requests being made to Instamojo server. Flip this flag: `Instamojo::DEBUG = true` and genereate the api client again.
+
 
 ## Contributing
 

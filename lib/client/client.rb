@@ -143,6 +143,15 @@ module Instamojo
       @response
     end
 
+    # GET /payment-requests
+    def payment_requests_list
+      get('payment-requests')
+    end
+
+    def payment_request_status(payment_request_id)
+      get("payment-requests/#{payment_request_id}") if payment_request_id
+    end
+
     # DELETE /auth/:token - Delete auth token
     def logout
       auth_token = get_connection_object.headers['X-Auth-Token']
