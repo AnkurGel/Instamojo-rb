@@ -116,9 +116,7 @@ module Instamojo
       if filepath && (file=File.open(File.expand_path(filepath), 'rb'))
         if (url=get_file_upload_url).is_a? String
           resource = RestClient::Resource.new(url)
-          json = resource.post fileUpload: file
-          response = JSON.parse(json)
-          response['url'] # handle exceptions & stuff
+          resource.post fileUpload: file
         end
       end
     end
