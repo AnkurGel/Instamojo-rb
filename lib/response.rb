@@ -16,7 +16,7 @@ module Instamojo
     end
 
     def response_success?
-      @code == 200
+      [200, 201, 202, 203, 204].include? @code
     end
 
     def success?

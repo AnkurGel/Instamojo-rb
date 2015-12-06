@@ -123,6 +123,10 @@ If you are interested in seeing api requests being made to Instamojo server. Fli
 ### Logout
 `client.logout`
 
+### Misc
+* `client.authorized` - View last status of api client request.
+* `client.response` - View last procured response by client.
+* `client.response.code` - View `response_code` of last request sent by client.
 
 ## Contributing
 

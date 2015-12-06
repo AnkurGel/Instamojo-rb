@@ -136,6 +136,13 @@ module Instamojo
       @response.success? ? Instamojo::Link.new(@response.body[:payment], self) : @response
     end
 
+    # POST /payment-requests
+    def payment_request(options, &block)
+      set_options(options, &block)
+      post('payment-requests', options)
+      @response
+    end
+
     # DELETE /auth/:token - Delete auth token
     def logout
       auth_token = get_connection_object.headers['X-Auth-Token']
