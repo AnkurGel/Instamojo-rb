@@ -1,29 +1,82 @@
-#Instamojo-rb#
+# Instamojo-rb
 This is the **Ruby** library of [Instamojo API](http://instamojo.com/developers).   
-This will assist you to programmatically create, edit and delete offers on Instamojo.
+This will assist you to programmatically create, edit and delete links on Instamojo. Also supports payments request, listing and status.
 
-##Installation##
+## Installation
 `gem install Instamojo-rb`    
-
 For your Rails/bundler projects:    
 `gem 'Instamojo-rb'`
 
-##Usage##
-
-###Set API keys###
+## Usage
+### Set API keys
 ```ruby
 require 'Instamojo-rb'
 api = Instamojo::API.new do |app|
-  app.app_id = "app_id-you-received-from-api@instamojo.com"
+  app.api_key = "api_key-you-received-from-api@instamojo.com"
+  app.auth_token = "auth_token-you-received-from-api@instamojo.com"
 end
 #or
-api = Instamojo::API.new("app_id-you-received-from-api@instamojo.com")
+api = Instamojo::API.new("api_key-you-received-from-api@instamojo.com", "auth_token-you-received-from-api@instamojo.com")
 ```
-
-###Generate client:###
+### Generate client
 `client = api.client`
 
-###Authentication###
+### Links
+
+`Link` object contains all the necessary information required to interpret, modify and archive an Instamojo Link. All link operations on client returns one or collectionn of `links`. Original response from Instamojo API for a link is encapsulated in `link.original`, which is immutable. More about it's usage is below.
+
+
+## Get Links
+```ruby
+client.links_list
+#=> Array of Instamojo::Link objects
+```
+
+## Create a new link
+```ruby
+new_link = client.create_link do |link|
+  link.title = 'API link 2'
+  link.description = 'Dummy offer via API'
+  link.currency = 'INR'
+  link.base_price = 0
+  link.quantity = 10
+  link.redirect_url = 'http://ankurgoel.com'
+end
+#=> Link object
+```
+or
+```ruby
+new_link_params = {title: 'API link 3', description: 'My dummy offer via API', currency: 'INR', quantity: 20}
+new_link = client.create_link(new_link_params)
+```
+
+## Detail of a link
+```ruby
+link = client.link_detail('link_slug_goes_here')
+#=> Returns Link object
+
+## Edit a link
+```ruby
+link = client.links_list.first
+link.save do |l|
+  l.title = "Foo"
+  l.description = "This new information should go in link"
+end
+#=> Returns updated Link object from Instamojo
+```
+or
+```ruby
+link = client.link_detail('foo-product')
+link.title = 'Foo'; link.description = 'This new information should go in link'
+link.save
+# returns updated Link object from Instamojo
+```
+or handle it directly without Link object
+```ruby
+client.edit_link({slug: 'foo-product', title: 'Foo', description: 'This new infromation should go in link'})
+```
+
+### Authentication
 ```ruby
 client.authenticate('instamojo_username', 'instamojo_password')
 #or
@@ -34,66 +87,20 @@ end
 #=> Instamojo Client(URL: https://www.instamojo.com/api/1, Status: Authenticated)
 ```
 
-###Offers###
-####List all offers####
-`client.get_offers`
+### Logging
+If you are interested in seeing api requests being made to Instamojo server. Flip this flag: `Instamojo::DEBUG = true` and genereate the api client again. 
 
-####List details of an offer####
-**Syntax:** `client.get_offer(offer_slug)`
-
-```ruby
-client.get_offer('demo-product')
-#=> {"offer"=> {"shorturl"=>nil, "start_date"=>nil, "note"=>"", "description"=>"This is a demo product. Just *claim* it. ", "venue"=>nil, "title"=>"Demo product", "url"=>"https://www.instamojo.com/ankurgel/demo-product/", "slug"=>"demo-product", "base_price"=>"0.00", "quantity"=>nil, "end_date"=>nil, "currency"=>"INR", "cover_image"=>nil, "timezone"=>nil, "redirect_url"=>""},
-# "success"=>true}
-```
-
-####Create an offer####
-```ruby
-client.create_offer do |offer|
-  offer.title = "Command line offer"
-  offer.description = "This offer is being created via Instamojo-rb"
-  offer.currency = "INR"
-  offer.base_price = 0
-  offer.quantity = 0
-end
-
-#OR
-client.create_offer({
-  "title" => "Command line offer",
-  "description" => "This offer is being created via Instamojo-rb",
-  "currency" => "INR",
-  "base_price" => 0,
-  "quantity" => 0
-})
-```
-
-####Archive an offer####
-`client.delete_offer('demo-product')`
-
-###Logout###
+### Logout
 `client.logout`
 
 
-##Development pipeline##
-
-Few things which will be available in next versions:
-
-* Error handling; with respect to `Instamojo` error codes.
-* File Upload support. 
-* `Offer` and `Event` model with api methods like   
-  + _Accessor_ methods like on `Offer`: `#title`, `#description`, `#quantity`
-  + `offer.set_title('Changed offer title')`
-  + `offer.set_quantity(30)`
-  + `offer.enable_variants`
-
-##Contributing##
+## Contributing
 
 * [Fork](https://github.com/AnkurGel/Instamojo-rb/fork) the project
 * `bundle install` to satisfy gem dependencies.
 * `rake install` to install the gem. 
 * Swim around in `lib/`. 
 
-##Copyright##
+## Copyright
 
 Copyright (c) 2014 Ankur Goel.
-

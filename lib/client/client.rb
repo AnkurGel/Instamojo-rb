@@ -94,7 +94,6 @@ module Instamojo
 
     # PATCH /links/:slug
     def edit_link(link = nil, options = {}, &block)
-      debugger
       if link && link.is_a?(Instamojo::Link)
         yield(link) if block_given?
       else
