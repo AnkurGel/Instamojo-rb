@@ -3,6 +3,7 @@ source "http://rubygems.org"
 # Example:
 #   gem "activesupport", ">= 2.3.5"
 gem "faraday", "0.8.8"
+gem 'rest-client', '~> 1.8'
 
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.

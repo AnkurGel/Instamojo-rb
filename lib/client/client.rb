@@ -54,8 +54,8 @@ module Instamojo
     define_http_verb :delete
 
 
-    #POST /auth/
-    #Authenticate, generate token and add header
+    # POST /auth/
+    # Authenticate, generate token and add header
     def authenticate(username = nil, password = nil, options = {}, &block)
       if username.is_a?(Hash) or password.is_a?(Hash)
         options = username.is_a?(Hash) ? username : password
@@ -88,6 +88,8 @@ module Instamojo
     # POST /links
     def create_link(options = {}, &block)
       options = set_options(options, &block)
+      options[:file_upload_json] = options[:file_upload] && upload_file(options.delete(:file_upload))
+      options[:cover_image_json] = options[:cover_image] && upload_file(options.delete(:cover_image))
       post('links', options)
       @response.success? ? Instamojo::Link.new(@response.body[:link], self) : @response
     end
@@ -109,6 +111,19 @@ module Instamojo
       delete("links/#{slug}")
     end
 
+    # POST 'https://filepicker.io/api/store/S3'
+    def upload_file(filepath)
+      if filepath && (file=File.open(File.expand_path(filepath), 'rb'))
+        if (url=get_file_upload_url).is_a? String
+          resource = RestClient::Resource.new(url)
+          json = resource.post fileUpload: file
+          response = JSON.parse(json)
+          response['url'] # handle exceptions & stuff
+        end
+      end
+    end
+
+
     # GET /payments
     def payments_list
       get('payments')
@@ -121,7 +136,7 @@ module Instamojo
       @response.success? ? Instamojo::Link.new(@response.body[:payment], self) : @response
     end
 
-    #DELETE /auth/:token - Delete auth token
+    # DELETE /auth/:token - Delete auth token
     def logout
       auth_token = get_connection_object.headers['X-Auth-Token']
       raise "Can't find any authorization token to logout." unless auth_token
@@ -161,6 +176,12 @@ module Instamojo
     def add_header(key, value)
       previous_headers = get_connection_object.headers
       get_connection_object.headers = previous_headers.merge({key => value})
+    end
+
+    # GET /links/get_file_upload_url
+    def get_file_upload_url
+      get('links/get_file_upload_url')
+      @response.success? ? @response.body[:upload_url] : @response
     end
   end
 end
