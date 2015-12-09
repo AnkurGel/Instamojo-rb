@@ -24,13 +24,15 @@ api = Instamojo::API.new("api_key-you-received-from-api@instamojo.com", "auth_to
 ---
 ### Links
 
-`Link` object contains all the necessary information required to interpret, modify and archive an Instamojo Link. All link operations on client returns one or collectionn of `links`. Original response from Instamojo API for a link is encapsulated in `link.original`, which is immutable.
+`Link` object contains all the necessary information required to interpret, modify and archive an Instamojo Link. All link operations on client returns one or collectionn of `links`. Original response from Instamojo API for a link is encapsulated in `link.original`, which is immutable. Call `#to_h` on `link` to get it's all attributes.
 _Helper methods_ for `Link`:
-* `link.to_h` - Returns equivalent Ruby hash for a link
+* `link.to_h` - Returns equivalent Ruby hash for a link.
 * `link.to_json` - Returns equivalent JSON for a link
 * `link.original` - Returns original link data fetched from API.
 * `link.save` - Edits updates carried out on Link object at Instamojo.
 * `link.archive` - Archives link at Instamojo
+* `link.reload` or `link.refresh` - Looks for changes on Instamojo server for the link. Immutable
+* `link.reload!` or `link.refresh!` - Same as `link.reload`, but mutable.
 
  More about it's usage is below.
 
@@ -90,7 +92,10 @@ new_link = client.create_link(new_link_params)
 #### Detail of a link
 ```ruby
 link = client.link_detail('link_slug_goes_here')
-#=> Returns Link object
+#=> Instamojo Link(slug: link_slug_goes_here, title: Foo Bar, shorturl: http://imojo.in/ankurfoobar)
+link.to_h
+#=> {"title"=>"Foo Bar", "description"=>"", "slug"=>"foo-product", "shorturl"=>"http://imojo.in/ankurfoobar", "url"=>"https://www.instamojo.com/ankurgel/foo-product/", "cover_image"=> "https://www.filepicker.io/api/file/BHeefKAARCKGC5l1J29e/convert?w=500&h=500&fit=clip&quality=70", "currency"=>"INR", "base_price"=>"0.00", "quantity"=>nil, "quantity_sold"=>2, "requires_shipping"=>false, "ships_within_days"=>nil, "start_date"=>nil, "end_date"=>nil, "venue"=>"", "timezone"=>"", "note"=>"", "redirect_url"=>"", "webhook_url"=>"", "status"=>"Live", "enable_pwyw"=>false, "enable_sign"=>false, "socialpay_platforms"=>""}
+```
 
 ## Edit a link
 ```ruby
@@ -115,7 +120,7 @@ client.edit_link({slug: 'foo-product', title: 'Foo', description: 'This new infr
 
 ---
 ### Payments
-`Payment` object contains the necessary information such as `payment_id`, `quantity`, `status`, `buyer_email` etc. `Payment` object has following helpers:
+`Payment` object contains the necessary information such as `payment_id`, `quantity`, `status`, `buyer_email` etc. Call `#to_h` on `payment` to get it's all attributes. `Payment` object has following helpers:
 - `payment.to_h` - Returns equivalent Ruby hash for a payment
 - `payment.to_json` - Returns equivalent JSON for a payment
 - `payment.original` - Returns original payment data fetched from API.
@@ -129,8 +134,10 @@ client.payments
 ```
 #### Detail or status of a payment
 ```ruby
-payment = client.payment_detail('payment_id')
-#=> Returns Payment object
+payment = client.payment_detail('MOJxxx06000F97367750')
+#=> Instamojo Payment(pament_id: MOJxxx06000F97367750, quantity: 1, amount: 0.00, status: Credit, link_slug: api-link-7-node, buyer_name: Ankur Goel)
+payment.to_h
+#=> Hash of all payment object attributes
 ```
 #### Request a payment
 This is a part of [RAP API](https://www.instamojo.com/developers/request-a-payment-api/). You can request a payment from anyone via this who will then be notified to make a payment with specified payment. The payment then can be carried out via [Instapay](https://www.instamojo.com/pay/). Jump over to the documentation to see accepted parameters.
@@ -151,6 +158,52 @@ You can get the status of a payment_request from the id you obtained after makin
 ```ruby
 client.payment_request_status('payment_request_id_goes_here')
 #=> Returns response containing the status of payment request.
+```
+---
+### Refunds
+`Refund` object contains the necessary information such as `payment_id`, `refund_amount`, `status` and `body` etc. Call `#to_h` on `refund` to get it's all attributes. `Refund` object has the same helpers as `Payment` above.
+
+#### Get Refunds
+```ruby
+refunds = client.refunds
+#=> Returns array of Refund objects
+```
+
+#### Create a new refund
+##### Required:
+* `payment_id` - Payment ID of the payment against which you're initiating the refund.
+* `type` - A three letter short-code identifying the [reason for this case](https://www.instamojo.com/developers/rest/#toc-refunds).
+* `body` - Additonal text explaining the refund.
+
+```ruby
+client.create_refund({payment_id: 'MOJO5c04000J30502939', type: 'QFL', body: 'Customer is not satisfied'})
+#=> Returns Refund object or non-200 response object
+```
+or
+```ruby
+client.create_refund do |refund|
+  refund.payment_id = 'MOJO5c04000J30502939'
+  refund.type       = 'QFL'
+  refund.body       = 'Customer is not satisifed'
+end
+```
+
+#### Details of a refund
+```ruby
+refunds = client.refunds
+refund = refunds.last
+refund.reload #=> refetches the refund from server
+#=> Instamojo Refund(
+```
+or
+```ruby
+refund = client.refund_detail 'C5c0751269'
+#=> Instamojo Refund(id: C5c0751269, status: 'Refunded' payment_id: MOJO5c04000J30502939, refund_amount: 100)
+refund.to_h
+#=> Hash of all refund attributes
+refund.reload!
+#=> Updates the refund from server
+#=> Instamojo Refund(id: C5c0751269, status: 'Closed' payment_id: MOJO5c04000J30502939, refund_amount: 100)
 ```
 
 ---
