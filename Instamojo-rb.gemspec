@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Ankur Goel"]
-  s.date = "2015-12-06"
+  s.date = "2015-12-09"
   s.description = "Instamojo Ruby library - Assists you to programmatically create, edit and delete offers on Instamojo. Also supports payments request, listing and status"
   s.email = "ankurgel@gmail.com"
   s.extra_rdoc_files = [
@@ -36,6 +36,7 @@ Gem::Specification.new do |s|
     "lib/client/client.rb",
     "lib/client/link.rb",
     "lib/client/payment.rb",
+    "lib/client/refund.rb",
     "lib/common_object.rb",
     "lib/response.rb",
     "lib/utility.rb",

@@ -44,5 +44,10 @@ module Instamojo
       end
       @client = client # Reference to client
     end
+
+    def to_s
+      sprintf("Instamojo Payment(pament_id: %s, quantity: %s, amount: %s, status: %s, link_slug: %s, buyer_name: %s)",
+              payment_id, quantity, amount, status, link_slug, buyer_name)
+    end
   end
 end

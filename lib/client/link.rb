@@ -54,5 +54,9 @@ module Instamojo
     def archive
       @client.archive_link(self.slug)
     end
+
+    def to_s
+      sprintf("Instamojo Link(slug: %s, title: %s, shorturl: %s)", slug, title, shorturl)
+    end
   end
 end

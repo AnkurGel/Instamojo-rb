@@ -150,6 +150,26 @@ module Instamojo
       get("payment-requests/#{payment_request_id}") if payment_request_id
     end
 
+
+    # GET /refunds
+    def refunds_list
+      get('refunds')
+      @response.success? ? @response.body[:refunds].map { |refund| Instamojo::Refund.new refund, self } : @response
+    end
+
+    # GET /refunds/:refund_id
+    def refund_detail(refund_id)
+      get("refunds/#{refund_id}")
+      @response.success? ? Instamojo::Refund.new(@response.body[:refund], self) : @response
+    end
+
+    # POST /refunds
+    def create_refund(options = {}, &block)
+      options = set_options(options, &block)
+      post('refunds', options)
+      @response.success? ? Instamojo::Refund.new(@response.body[:refund], self) : @response
+    end
+
     # DELETE /auth/:token - Delete auth token
     def logout
       auth_token = get_connection_object.headers['X-Auth-Token']
