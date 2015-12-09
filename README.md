@@ -97,7 +97,7 @@ link.to_h
 #=> {"title"=>"Foo Bar", "description"=>"", "slug"=>"foo-product", "shorturl"=>"http://imojo.in/ankurfoobar", "url"=>"https://www.instamojo.com/ankurgel/foo-product/", "cover_image"=> "https://www.filepicker.io/api/file/BHeefKAARCKGC5l1J29e/convert?w=500&h=500&fit=clip&quality=70", "currency"=>"INR", "base_price"=>"0.00", "quantity"=>nil, "quantity_sold"=>2, "requires_shipping"=>false, "ships_within_days"=>nil, "start_date"=>nil, "end_date"=>nil, "venue"=>"", "timezone"=>"", "note"=>"", "redirect_url"=>"", "webhook_url"=>"", "status"=>"Live", "enable_pwyw"=>false, "enable_sign"=>false, "socialpay_platforms"=>""}
 ```
 
-## Edit a link
+#### Edit a link
 ```ruby
 link = client.links_list.first
 link.save do |l|
@@ -190,13 +190,6 @@ end
 
 #### Details of a refund
 ```ruby
-refunds = client.refunds
-refund = refunds.last
-refund.reload #=> refetches the refund from server
-#=> Instamojo Refund(
-```
-or
-```ruby
 refund = client.refund_detail 'C5c0751269'
 #=> Instamojo Refund(id: C5c0751269, status: 'Refunded' payment_id: MOJO5c04000J30502939, refund_amount: 100)
 refund.to_h
@@ -204,6 +197,13 @@ refund.to_h
 refund.reload!
 #=> Updates the refund from server
 #=> Instamojo Refund(id: C5c0751269, status: 'Closed' payment_id: MOJO5c04000J30502939, refund_amount: 100)
+```
+or
+```ruby
+refunds = client.refunds
+refund = refunds.last
+refund.reload #=> refetches the refund from server
+#=> Instamojo Refund(id: C5c0751269, status: 'Refunded' payment_id: MOJO5c04000J30502939, refund_amount: 100)
 ```
 
 ---
