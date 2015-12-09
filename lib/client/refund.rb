@@ -22,16 +22,25 @@ module Instamojo
     include CommonObject
 
     def initialize(refund, client)
-      @original = refund
-      refund.each do |k, v|
-        instance_variable_set("@#{k}", v)
-      end
+      assign_values(refund)
       @client = client
+    end
+
+    def reload
+      @client.refund_detail(payment_id)
+    end
+
+    def reload!
+      obj = reload
+      obj.instance_of?(Refund) ? assign_values(obj.to_h) : obj
     end
 
     def to_s
       sprintf("Instamojo Refund(id: %s, status: %s, payment_id: %s, refund_amount: %s)",
               id, status, payment_id, refund_amount)
     end
+
+    alias_method :refresh, :reload
+    alias_method :refresh!, :reload!
   end
 end

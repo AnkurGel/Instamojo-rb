@@ -1,5 +1,14 @@
 module Instamojo
   module CommonObject
+
+    def assign_values(object)
+      @original = object
+      object.each do |k, v|
+        instance_variable_set("@#{k}", v)
+      end
+      self
+    end
+
     def to_json
       construct_hash.to_json
     end
