@@ -85,7 +85,7 @@ end
 ```
 or
 ```ruby
-new_link_params = {title: 'API link 3', description: 'My dummy offer via API', currency: 'INR', quantity: 20}
+new_link_params = {base_price: 199, title: 'API link 3', description: 'My dummy offer via API', currency: 'INR', quantity: 20}
 new_link = client.create_link(new_link_params)
 ```
 
