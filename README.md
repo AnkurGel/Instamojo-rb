@@ -85,7 +85,7 @@ end
 ```
 or
 ```ruby
-new_link_params = {title: 'API link 3', description: 'My dummy offer via API', currency: 'INR', quantity: 20}
+new_link_params = {base_price: 199, title: 'API link 3', description: 'My dummy offer via API', currency: 'INR', quantity: 20}
 new_link = client.create_link(new_link_params)
 ```
 
@@ -129,7 +129,7 @@ Details are documented [here](https://www.instamojo.com/developers/rest/#toc-pay
 
 #### Get Payments
 ```ruby
-client.payments
+client.payments_list
 #=> Returns array of Payment objects
 ```
 #### Detail or status of a payment
@@ -165,7 +165,7 @@ client.payment_request_status('payment_request_id_goes_here')
 
 #### Get Refunds
 ```ruby
-refunds = client.refunds
+refunds = client.refunds_list
 #=> Returns array of Refund objects
 ```
 
@@ -200,7 +200,7 @@ refund.reload!
 ```
 or
 ```ruby
-refunds = client.refunds
+refunds = client.refunds_list
 refund = refunds.last
 refund.reload #=> refetches the refund from server
 #=> Instamojo Refund(id: C5c0751269, status: 'Refunded' payment_id: MOJO5c04000J30502939, refund_amount: 100)
