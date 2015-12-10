@@ -129,7 +129,7 @@ Details are documented [here](https://www.instamojo.com/developers/rest/#toc-pay
 
 #### Get Payments
 ```ruby
-client.payments
+client.payments_list
 #=> Returns array of Payment objects
 ```
 #### Detail or status of a payment
