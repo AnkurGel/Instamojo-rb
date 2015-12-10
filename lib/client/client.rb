@@ -14,8 +14,9 @@ module Instamojo
       end
     end
 
-    def initialize(api)
-      @conn = Faraday.new(URL, &connection_options)
+    def initialize(api, endpoint)
+      @endpoint = endpoint || URL
+      @conn = Faraday.new(@endpoint, &connection_options)
 
       #TODO: To abstract in /errors.rb
       raise "Supply API with api_key before generating client" unless api.api_key
@@ -182,7 +183,7 @@ module Instamojo
     end
 
     def to_s
-      sprintf("Instamojo Client(URL: %s, Authorized: %s)", URL, @authorized)
+      sprintf("Instamojo Client(URL: %s, Authorized: %s)", @endpoint, @authorized)
     end
 
     private
