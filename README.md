@@ -143,21 +143,19 @@ payment.to_h
 This is a part of [RAP API](https://www.instamojo.com/developers/request-a-payment-api/). You can request a payment from anyone via this who will then be notified to make a payment with specified payment. The payment then can be carried out via [Instapay](https://www.instamojo.com/pay/). Jump over to the documentation to see accepted parameters.
 ##### Code:
 ```ruby
-payment = client.payment_request({amount:100, purpose: 'api', send_email: true, email: 'ankurgel+2@gmail.com', redirect_url: 'http://ankurgoel.com'})
-#=> Returns response of payment request.
-p client.response.body[:payment_request]
-#=> Print status & details of payment_request. Details will also contain unique id which can be used to request the status of payment request later.
+payment_request = client.payment_request({amount:100, purpose: 'api', send_email: true, email: 'ankurgel+2@gmail.com', redirect_url: 'http://ankurgoel.com'})
+#=> Instamojo PaymentRequest(id: 8726f8c5001e426f8b24e908b2761686, purpose: api, amount: 100.00, status: Sent, shorturl: , longurl: https://www.instamojo.com/@ashwini/8726f8c5001e426f8b24e908b2761686)
 ```
 #### Get Payment Requests
 ```ruby
 response = client.payment_requests_list
-#=> Returns response for all payment_requests with their status
+#=> Returns array of PaymentRequest objects
 ```
 #### Status of payment request
 You can get the status of a payment_request from the id you obtained after making payment request.
 ```ruby
-client.payment_request_status('payment_request_id_goes_here')
-#=> Returns response containing the status of payment request.
+payment_request = client.payment_request_status('8726f8c5001e426f8b24e908b2761686')
+#=> #=> Instamojo PaymentRequest(id: 8726f8c5001e426f8b24e908b2761686, purpose: api, amount: 100.00, status: Sent, shorturl: , longurl: https://www.instamojo.
 ```
 ---
 ### Refunds
