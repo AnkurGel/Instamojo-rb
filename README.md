@@ -155,7 +155,7 @@ response = client.payment_requests_list
 You can get the status of a payment_request from the id you obtained after making payment request.
 ```ruby
 payment_request = client.payment_request_status('8726f8c5001e426f8b24e908b2761686')
-#=> #=> Instamojo PaymentRequest(id: 8726f8c5001e426f8b24e908b2761686, purpose: api, amount: 100.00, status: Sent, shorturl: , longurl: https://www.instamojo.
+#=> Instamojo PaymentRequest(id: 8726f8c5001e426f8b24e908b2761686, purpose: api, amount: 100.00, status: Sent, shorturl: http://imjo.in/Nasdf , longurl: https://www.instamojo.com/@ashwini/8726f8c5001e426f8b24e908b2761686)
 ```
 ---
 ### Refunds
