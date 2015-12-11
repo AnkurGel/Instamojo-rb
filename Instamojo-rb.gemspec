@@ -37,6 +37,7 @@ Gem::Specification.new do |s|
     "lib/client/link.rb",
     "lib/client/payment.rb",
     "lib/client/refund.rb",
+    "lib/client/payment_request.rb",
     "lib/common_object.rb",
     "lib/response.rb",
     "lib/utility.rb",
