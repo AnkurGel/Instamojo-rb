@@ -139,18 +139,19 @@ module Instamojo
     def payment_request(options, &block)
       set_options(options, &block)
       post('payment-requests', options)
-      @response
+      @response.success? ? Instamojo::PaymentRequest.new(@response.body[:payment_request], self) : @response
     end
 
     # GET /payment-requests
     def payment_requests_list
       get('payment-requests')
+      @response.success? ? @response.body[:payment_requests].map { |payment_request| Instamojo::PaymentRequest.new payment_request, self } : @response
     end
 
     def payment_request_status(payment_request_id)
       get("payment-requests/#{payment_request_id}") if payment_request_id
+      @response.success? ? Instamojo::PaymentRequest.new(@response.body[:payment_request], self) : @response
     end
-
 
     # GET /refunds
     def refunds_list
