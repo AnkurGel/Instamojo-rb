@@ -132,7 +132,7 @@ module Instamojo
     # GET /payments/:payment_id
     def payment_detail(payment_id)
       get("payments/#{payment_id}")
-      @response.success? ? Instamojo::Link.new(@response.body[:payment], self) : @response
+      @response.success? ? Instamojo::Payment.new(@response.body[:payment], self) : @response
     end
 
     # POST /payment-requests
