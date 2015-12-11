@@ -39,7 +39,7 @@ module Instamojo
     end
 
     def to_s
-      sprintf("Instamojo Payment Request(id: %s, purpose: %s, amount: %s, status: %s, shorturl: %s, longurl: %s)",
+      sprintf("Instamojo PaymentRequest(id: %s, purpose: %s, amount: %s, status: %s, shorturl: %s, longurl: %s)",
               id, purpose, amount, status, shorturl, longurl)
     end
   end
