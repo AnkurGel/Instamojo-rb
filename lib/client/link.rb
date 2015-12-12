@@ -54,7 +54,7 @@ module Instamojo
     end
 
     def to_s
-      sprintf("Instamojo Link(slug: %s, title: %s, shorturl: %s)", slug, title, shorturl)
+      sprintf("Instamojo Link(slug: %s, title: %s, shorturl: %s, status: %s)", slug, title, shorturl, status)
     end
   end
 end
