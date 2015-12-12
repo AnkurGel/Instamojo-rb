@@ -18,7 +18,7 @@ Jeweler::Tasks.new do |gem|
   gem.homepage = "http://github.com/AnkurGel/Instamojo-rb"
   gem.license = "MIT"
   gem.summary = %Q{Instamojo Ruby library - Assists you to programmatically create, edit and delete offers on Instamojo}
-  gem.description = %Q{Instamojo Ruby library - Assists you to programmatically create, edit and delete offers on Instamojo. Also supports payments request, listing and status}
+  gem.description = %Q{Instamojo Ruby library - Assists you to programmatically create, edit and delete offers on Instamojo. Also supports listing, updation and details of Payments, Payments Requests and Refunds.}
   gem.email = "ankurgel@gmail.com"
   gem.authors = ["Ankur Goel"]
   # dependencies defined in Gemfile
