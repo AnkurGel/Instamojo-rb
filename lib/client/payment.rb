@@ -43,6 +43,13 @@ module Instamojo
       @client = client # Reference to client
     end
 
+    # Process refund for this payment
+    # payment.process_refund(type: 'QFL', body: 'Customer is not satisfied')
+    def process_refund(hash = {}, &block)
+      hash[:payment_id] = self.payment_id
+      @client.create_refund(hash, &block)
+    end
+
     def to_s
       sprintf("Instamojo Payment(payment_id: %s, quantity: %s, amount: %s, status: %s, link_slug: %s, buyer_name: %s)",
               payment_id, quantity, amount, status, link_slug, buyer_name)
