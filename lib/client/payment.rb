@@ -36,17 +36,15 @@ module Instamojo
 
     attr_reader :original
     include CommonObject
+    detail_method :payment_detail, :payment_id
 
     def initialize(payment, client)
-      @original = payment
-      payment.each do |k, v|
-        instance_variable_set("@#{k}", v)
-      end
+      assign_values(payment)
       @client = client # Reference to client
     end
 
     def to_s
-      sprintf("Instamojo Payment(pament_id: %s, quantity: %s, amount: %s, status: %s, link_slug: %s, buyer_name: %s)",
+      sprintf("Instamojo Payment(payment_id: %s, quantity: %s, amount: %s, status: %s, link_slug: %s, buyer_name: %s)",
               payment_id, quantity, amount, status, link_slug, buyer_name)
     end
   end

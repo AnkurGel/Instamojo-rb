@@ -74,14 +74,18 @@ client.links_list
 ##### Code:
 ```ruby
 new_link = client.create_link do |link|
-  link.title = 'API link 2'
+  link.title = 'API link v1.1'
   link.description = 'Dummy offer via API'
   link.currency = 'INR'
   link.base_price = 0
   link.quantity = 10
   link.redirect_url = 'http://ankurgoel.com'
+  link.file_upload = '~/Pictures/RISE.jpg'
+  link.cover_image = '~/Pictures/saturday.jpg'
 end
-#=> Link object
+#=> Instamojo Link(slug: api-link-v11, title: API link v1.1, shorturl: )
+new_link.reload!
+#=> Instamojo Link(slug: api-link-v11, title: API link v1.1, shorturl: http://imojo.in/1dxv1h)
 ```
 or
 ```ruby
@@ -124,6 +128,7 @@ client.edit_link({slug: 'foo-product', title: 'Foo', description: 'This new infr
 - `payment.to_h` - Returns equivalent Ruby hash for a payment
 - `payment.to_json` - Returns equivalent JSON for a payment
 - `payment.original` - Returns original payment data fetched from API.
+- Like `Link`, it also exposes `reload` and `reload!`
 
 Details are documented [here](https://www.instamojo.com/developers/rest/#toc-payments)
 
@@ -135,7 +140,7 @@ client.payments_list
 #### Detail or status of a payment
 ```ruby
 payment = client.payment_detail('MOJxxx06000F97367750')
-#=> Instamojo Payment(pament_id: MOJxxx06000F97367750, quantity: 1, amount: 0.00, status: Credit, link_slug: api-link-7-node, buyer_name: Ankur Goel)
+#=> Instamojo Payment(payment_id: MOJxxx06000F97367750, quantity: 1, amount: 0.00, status: Credit, link_slug: api-link-7-node, buyer_name: Ankur Goel)
 payment.to_h
 #=> Hash of all payment object attributes
 ```
@@ -148,18 +153,20 @@ payment_request = client.payment_request({amount:100, purpose: 'api', send_email
 ```
 #### Get Payment Requests
 ```ruby
-response = client.payment_requests_list
+payment_requests = client.payment_requests_list
 #=> Returns array of PaymentRequest objects
 ```
 #### Status of payment request
 You can get the status of a payment_request from the id you obtained after making payment request.
 ```ruby
+payment_request.reload!
+#or
 payment_request = client.payment_request_status('8726f8c5001e426f8b24e908b2761686')
 #=> Instamojo PaymentRequest(id: 8726f8c5001e426f8b24e908b2761686, purpose: api, amount: 100.00, status: Sent, shorturl: http://imjo.in/Nasdf , longurl: https://www.instamojo.com/@ashwini/8726f8c5001e426f8b24e908b2761686)
 ```
 ---
 ### Refunds
-`Refund` object contains the necessary information such as `payment_id`, `refund_amount`, `status` and `body` etc. Call `#to_h` on `refund` to get it's all attributes. `Refund` object has the same helpers as `Payment` above.
+`Refund` object contains the necessary information such as `payment_id`, `refund_amount`, `status` and `body` etc. Call `#to_h` on `refund` to get it's all attributes. `Refund` object has the same helpers as `Payment` above, including `reload` and `reload!`.
 
 #### Get Refunds
 ```ruby

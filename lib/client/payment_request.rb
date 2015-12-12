@@ -25,16 +25,14 @@ module Instamojo
 
   class PaymentRequest
     attr_accessor :id, :phone, :email, :buyer_name, :amount, :purpose, :status, :send_sms, :send_email, :sms_status
-    attr_accessor  :email_status, :shorturl, :longurl, :redirect_url, :webhook, :created_at, :modified_at, :allow_repeated_payments
+    attr_accessor :email_status, :shorturl, :longurl, :redirect_url, :webhook, :created_at, :modified_at, :allow_repeated_payments
 
     attr_reader :original
     include CommonObject
+    detail_method :payment_request_status, :id
 
     def initialize(payment_request, client)
-      @original = payment_request
-      payment_request.each do |k, v|
-        instance_variable_set("@#{k}", v)
-      end
+      assign_values(payment_request)
       @client = client # Reference to client
     end
 

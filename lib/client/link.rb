@@ -36,20 +36,11 @@ module Instamojo
     attr_reader :original
 
     include CommonObject
+    detail_method :link_detail, :slug
 
     def initialize(link, client)
       assign_values(link)
       @client = client # Reference to client
-    end
-
-    # Reload the link from server
-    def reload
-      @client.link_detail slug
-    end
-
-    def reload!
-      obj = reload
-      obj.instance_of?(Link) ? assign_values(obj.to_h) : obj
     end
 
     # Carry out update request on a Link
@@ -65,8 +56,5 @@ module Instamojo
     def to_s
       sprintf("Instamojo Link(slug: %s, title: %s, shorturl: %s)", slug, title, shorturl)
     end
-
-    alias_method :refresh, :reload
-    alias_method :refresh!, :reload!
   end
 end

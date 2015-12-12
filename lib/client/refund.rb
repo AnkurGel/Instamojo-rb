@@ -19,19 +19,11 @@ module Instamojo
     attr_reader :original
 
     include CommonObject
+    detail_method :refund_detail, :payment_id
 
     def initialize(refund, client)
       assign_values(refund)
       @client = client
-    end
-
-    def reload
-      @client.refund_detail(payment_id)
-    end
-
-    def reload!
-      obj = reload
-      obj.instance_of?(Refund) ? assign_values(obj.to_h) : obj
     end
 
     def to_s
@@ -39,7 +31,5 @@ module Instamojo
               id, status, payment_id, refund_amount)
     end
 
-    alias_method :refresh, :reload
-    alias_method :refresh!, :reload!
   end
 end

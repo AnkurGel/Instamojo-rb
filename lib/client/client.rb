@@ -82,6 +82,7 @@ module Instamojo
 
     # GET /links/:slug
     def link_detail(slug)
+      slug = slug.slug if slug.instance_of? Instamojo::Link
       get("links/#{slug}")
       @response.success? ? Instamojo::Link.new(@response.body[:link], self) : @response
     end
@@ -131,6 +132,7 @@ module Instamojo
 
     # GET /payments/:payment_id
     def payment_detail(payment_id)
+      payment_id = payment_id.payment_id if payment_id.instance_of? Instamojo::Payment
       get("payments/#{payment_id}")
       @response.success? ? Instamojo::Payment.new(@response.body[:payment], self) : @response
     end
@@ -149,6 +151,7 @@ module Instamojo
     end
 
     def payment_request_status(payment_request_id)
+      payment_request_id = payment_request_id.id if payment_request_id.instance_of? Instamojo::PaymentRequest
       get("payment-requests/#{payment_request_id}") if payment_request_id
       @response.success? ? Instamojo::PaymentRequest.new(@response.body[:payment_request], self) : @response
     end
