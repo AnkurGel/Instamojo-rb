@@ -2,11 +2,14 @@ require 'faraday'
 require 'json'
 require 'uri'
 require 'ostruct'
-require_relative 'API/api'
-require_relative 'client/client'
+require 'rest_client'
 require_relative 'utility'
-
-module Instamojo
-  URL = "https://www.instamojo.com"
-  PREFIX = "/api/1"
-end
+require_relative 'common_object'
+require_relative 'response'
+require_relative 'base'
+require_relative 'API/api'
+require_relative 'client/link'
+require_relative 'client/payment'
+require_relative 'client/refund'
+require_relative 'client/client'
+require_relative 'client/payment_request'
