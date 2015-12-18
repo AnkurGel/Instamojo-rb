@@ -54,5 +54,7 @@ module Instamojo
       sprintf("Instamojo Payment(payment_id: %s, quantity: %s, amount: %s, status: %s, link_slug: %s, buyer_name: %s)",
               payment_id, quantity, amount, status, link_slug, buyer_name)
     end
+
+    alias_method :create_refund, :process_refund
   end
 end

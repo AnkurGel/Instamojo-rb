@@ -195,10 +195,10 @@ end
 or refund a `payment` directly:
 ```ruby
 payment = client.payment_detail('MOJO5c05000F97367750')
-payment.process_refund(type: 'QFL', reason: 'User wanted different version') #or
+payment.process_refund(type: 'QFL', body: 'User wanted different version') #or
 payment.process_refund do |refund|
   refund.type = 'QFL'
-  refund.reason = 'User wanted different version'
+  refund.body = 'User wanted different version'
 end
 ```
 
