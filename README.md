@@ -252,6 +252,11 @@ If you are interested in seeing api requests being made to Instamojo server. Fli
 * `rake install` to install the gem.
 * Swim around in `lib/`.
 
+## Contributors
+1. Ashwini Chaudhary - [@ashwch](https://github.com/ashwch)
+   * [PR #3](https://github.com/AnkurGel/Instamojo-rb/pull/3) - Couple of minor fixes.
+   * [PR #4](https://github.com/AnkurGel/Instamojo-rb/pull/4) - Class wrapper over Payment Request. Code fixes.
+
 ## Copyright
 
 Copyright (c) 2014 Ankur Goel.
