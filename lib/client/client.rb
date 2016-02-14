@@ -138,7 +138,7 @@ module Instamojo
     end
 
     # POST /payment-requests
-    def payment_request(options, &block)
+    def payment_request(options = {}, &block)
       set_options(options, &block)
       post('payment-requests', options)
       @response.success? ? Instamojo::PaymentRequest.new(@response.body[:payment_request], self) : @response
