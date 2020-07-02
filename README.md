@@ -1,6 +1,6 @@
 # Instamojo-rb
-This is the **Ruby** library of [Instamojo REST API](https://www.instamojo.com/developers/rest/).
-This will assist you to programmatically create, edit and delete links on Instamojo. Also supports [RAP](https://www.instamojo.com/developers/request-a-payment-api/) api for payments request, listing and status.
+This is the **Ruby** library of [Instamojo REST API](https://docs.instamojo.com/v1.1/docs).
+This will assist you to programmatically create, edit and delete links on Instamojo. Also supports [RAP](https://docs.instamojo.com/docs/create-a-request) api for payments request, listing and status.
 
 ## Installation
 `gem install Instamojo-rb`
@@ -150,7 +150,7 @@ payment.to_h
 #=> Hash of all payment object attributes
 ```
 #### Request a payment
-This is a part of [RAP API](https://www.instamojo.com/developers/request-a-payment-api/). You can request a payment from anyone via this who will then be notified to make a payment with specified payment. The payment then can be carried out via [Instapay](https://www.instamojo.com/pay/). Jump over to the documentation to see accepted parameters.
+This is a part of [RAP API](https://docs.instamojo.com/docs/create-a-request). You can request a payment from anyone via this who will then be notified to make a payment with specified payment. Jump over to the documentation to see accepted parameters.
 ##### Code:
 ```ruby
 payment_request = client.payment_request({amount:100, purpose: 'api', send_email: true, email: 'ankurgel+2@gmail.com', redirect_url: 'http://ankurgoel.com'})
